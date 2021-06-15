@@ -1,306 +1,300 @@
 //   This fitting program was written by Oleg Ivanov
-//      How to use:
+//   Modified by Stefano Fracassetti
+
+//      How to use: (out of date)
 //   1. Load the program in root by typing .L FitPeaks.C - the code will be compiled and all the functions loaded to memory
 //   2. Call GetFitPeaks() to see the list of fitting functions available
 //   3. Call a function of choice with appropriate variables
 //      In case of questions or comments please call me at 016 32 72 73
 
-#include "TF1.h"
-#include "TMath.h"
 
-Double_t gBgConstant, gBgSlope, gContent, gMean, gContent_1, gMean_1, gContent_2, gMean_2, gSigma, gSigma_1, gSigma_2, gBinW, gChi2pNDF;
+#include "TH1F.h"
+#include "TMath.h"
+#include "TCanvas.h"
+#include "TGClient.h"
+#include "TF1.h"
+#include <iostream>
+#include "TMarker.h"
+#include "TString.h"
+#include "TFile.h"
+#include "TTree.h"
+#include <TQObject.h>
+
+TFile* InputFile = new TFile("DSSD_3178-11_Front.root");
+
+Double_t gaus_lbg(Double_t *x, Double_t *par);
+void FitSinglePeakInteractively(TH1F *hist);
+
+
+int ica;
+string in;
+void terminal_input(Int_t event, Int_t x, Int_t y, TObject *selected);
+
+Double_t gBgConstant, gBgSlope, gContent, gMean, gSigma, gBinW, gChi2pNDF;
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+///// Ouput: File and Tree
+////////////////////////////////////////////////////////////////////////////////
+
+Double_t LowerX, UpperX, Mean, FWHM, Resolution;
+
+//TTree* OutputTree = new TTree("OutputTree", "Peak Fitting");
+//OutputTree->Branch("LowX", &LowerX,     "LowX/D");
+//OutputTree->Branch("UpX" , &UpperX,     "UpX/D" );
+//OutputTree->Branch("Mean", &Mean,       "Mean/D");
+//OutputTree->Branch("FWHM", &FWHM,       "FWHM/D");
+//OutputTree->Branch("Res" , &Resolution, "Resolution/D");
+
+//TFile* OutputFile = new TFile();
 
 //_____________________________________________________
+//_____________________________________________________
+
+
+// FitStripsInteractively()
+//
+// This function allowes to fit interactively each strip of a DSSSD side.
+// You should call this function after opening the root converted file
+//
+// The function takes no parameters, but loop on every strip of a certain DSSSD side.
+//
+// The Fit will be done interactively, and taken care by FitPeakInteractively(hist)
+
+void FitStripsInteractively() {//TString OutputFile_Name) {
+  Int_t strip;
+  for(strip=0;strip<32;strip++) {
+    
+    TString HistStrip_Name = "h";
+    HistStrip_Name.Append(char(strip));
+    TH1F* HistStrip = (TH1F*)InputFile->Get(HistStrip_Name);
+    
+    FitSinglePeakInteractively(HistStrip);
+  }
+}
+
+
+//_____________________________________________________
+//_____________________________________________________
+
+ 
+// FitSinglePeakInteractively()
+//
+// This function will fit a peak, and output the peak parameters.
+//
+// The function takes only the histogram name, and let the user select the extremes of the fitting region.
+// Selecting the x-region to fit is done interactivel clicking with the mouse on the x-axis.
+//
+// The output will be visible on terminal, and some of the parameters recorde on file.
+
+void FitSinglePeakInteractively(TH1F *hist) {
+
+
+      
+  ////////// Creating the function of the form 'gaus_lbg' defined in gaus_lbg
+  TF1 fitfunc("gauss_linbg",gaus_lbg, 0, 1, 5);
+  fitfunc.SetParName(0,"BgConstant");
+  fitfunc.SetParName(1,"BgSlope   ");
+  fitfunc.SetParName(2,"Sigma     ");
+  fitfunc.SetParName(3,"Content   ");
+  fitfunc.SetParName(4,"Mean      ");
+
+  ////////// Select extremes interactively from Canvas
+  TCanvas* Canvas = new TCanvas("Canvas","Fit Canvas",1200,900); 
+  Double_t gLowX= 19100, gUpX = 19260;
+  
+  hist->Draw();
+  
+  
+  ////////// Suspend the program
+  Canvas->Modified();
+  Canvas->Update();
+      
+  ica=0;
+  cout << "e for another event, q for exit" << endl;
+
+  //connette il canvas a un evento grafico (non chiarissimo come funziona)
+  Canvas->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+		  "terminal_input(Int_t,Int_t,Int_t,TObject*)");
+  
+  while(ica!=1){
+    usleep(100);
+    gClient->HandleInput();//fondamentale, se no non funziona
+  }
+  
+  Canvas->Disconnect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)");
+
+
+  
+
+  
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  ///// Fitting the Peak
+  ////////////////////////////////////////////////////////////////////////////////
+  
+  if(gLowX < gUpX)
+    {
+      
+      ///// Obtaining and specifying the start values for the fit
+      
+      gContent = hist->Integral(hist->FindBin(gLowX),hist->FindBin(gUpX)); 
+      gMean    = 0.5 * ( gLowX + gUpX);  
+      gSigma   = 0.3 * ( gUpX  - gLowX); 
+      gBinW = hist->GetBinWidth(1);
+      
+      //   printf("__________________");
+      //   printf("_The Start Values_");
+      //   printf("Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d",gBinW,gMean,gContent,gSigma);
+      //   printf("__________________");
+      
+      fitfunc.SetParameters(0, 0, gSigma, gContent, gMean); 
+      fitfunc.SetRange(gLowX, gUpX);
+
+      ///// Fitting: 'R' means within the range specified above
+      
+      hist->Fit("gauss_linbg", "R", "SAME");
+
+      gBgConstant = fitfunc.GetParameter(0);
+      gBgSlope    = fitfunc.GetParameter(1);
+      gSigma      = fitfunc.GetParameter(2);
+      gContent    = fitfunc.GetParameter(3);
+      gMean       = fitfunc.GetParameter(4);
+      gChi2pNDF   = fitfunc.GetChisquare() / fitfunc.GetNDF();
+
+      printf("      Chi Square: %f\n",fitfunc.GetChisquare());
+      printf("            FWHM: %f +- %f\n",2*gSigma*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(2));
+
+
+      ////////////////////////////////////////////////////////////////////////////////
+      ///// Draw the fitting function, and ask for satisfaction
+      ////////////////////////////////////////////////////////////////////////////////
+
+      
+      
+
+      ////////////////////////////////////////////////////////////////////////////////
+      ///// Store the value in a TTree
+      ////////////////////////////////////////////////////////////////////////////////
+     
+      
+    } // end if
+  
+  ///// Inconsistent limit
+  else std::cout << "Couldn't fit! Error: The Lower Limit is larger than the Upper Limit!" << std::endl;
+  
+}
+
+
+//_____________________________________________________
+//_____________________________________________________
+
+// gaus_lbg()
+//
+// This is a Guassian function with a linear background
+//
+// The function takes the x-value, and the gaussian parameters.
+//   par[0] background constant
+//   par[1] background slope
+//   par[2] gauss width
+//   par[3] gauss0 constant
+//   par[4] gauss0 mean
+//
+// The function evaluates the gaussian in the x-value given, and return the corresponding y-value.
 
 Double_t gaus_lbg(Double_t *x, Double_t *par)
 {
-/*
-  par[0]   background constant
-  par[1]   background slope
-  par[2]   gauss width
-  par[3]   gauss0 constant
-  par[4]   gauss0 mean
-*/
-   static Float_t sqrt2pi = TMath::Sqrt(2*TMath::Pi()), sqrt2 = TMath::Sqrt(2.);
-   Double_t arg;
-   if (par[2] == 0) par[2]=1;                 //  force widths /= 0
-   arg = (x[0] - par[4])/(sqrt2*par[2]);
-   Double_t fitval = par[0] + x[0]*par[1]
-              + gBinW/(sqrt2pi*par[2]) * par[3] * exp(-arg*arg);
-   return fitval;
-}
-//_____________________________________________________
-
-Double_t db_gaus_lbg(Double_t *x, Double_t *par)
-{
-/*
-  par[0]   background constant
-  par[1]   background slope
-  par[2]   gauss width
-  par[3]   gauss0 constant
-  par[4]   gauss0 mean
-  par[5]   gauss1 constant
-  par[6]   gauss1 mean
-*/
-   static Float_t sqrt2pi = TMath::Sqrt(2*TMath::Pi()), sqrt2 = TMath::Sqrt(2.);
-   Double_t arg_1, arg_2;
-   if (par[2] == 0) par[2]=1;                 //  force widths /= 0
-   arg_1 = (x[0] - par[4])/(sqrt2*par[2]);
-   arg_2 = (x[0] - par[6])/(sqrt2*par[2]);
-   Double_t fitval = par[0] + x[0]*par[1]
-                   + gBinW/(sqrt2pi*par[2]) * par[3] * exp(-arg_1*arg_1)
-                   + gBinW/(sqrt2pi*par[2]) * par[5] * exp(-arg_2*arg_2);
-   return fitval;
-}
-//_____________________________________________________
-
-Double_t db_gaus_lbg_diff(Double_t *x, Double_t *par)
-{
-/*
-  par[0]   background constant
-  par[1]   background slope
-  par[2]   gauss0 width
-  par[3]   gauss0 constant
-  par[4]   gauss0 mean
-  par[5]   gauss1 width
-  par[6]   gauss1 constant
-  par[7]   gauss1 mean
-*/
-   static Float_t sqrt2pi = TMath::Sqrt(2*TMath::Pi()), sqrt2 = TMath::Sqrt(2.);
-   Double_t arg_1, arg_2;
-   if (par[2] == 0) par[2]=1;                 //  force widths /= 0
-   arg_1 = (x[0] - par[4])/(sqrt2*par[2]);
-   arg_2 = (x[0] - par[7])/(sqrt2*par[5]);
-   Double_t fitval = par[0] + x[0]*par[1]
-                   + gBinW/(sqrt2pi*par[2]) * par[3] * exp(-arg_1*arg_1)
-                   + gBinW/(sqrt2pi*par[5]) * par[6] * exp(-arg_2*arg_2);
-   return fitval;
-}
-//_____________________________________________________
-
-void GetFitHelp(void)
-{
-/* printf("=============================================================================================\n");
- printf("   The following functions are available:\n");
- printf("---------------------------------------------------------------------------------------------\n");
- printf("          FindSinglePeak(TH1F *HistogramName, Double_t LeftLimit,        Double_t Energy)\n");
- printf("           FitSinglePeak(TH1F *HistogramName, Double_t LeftLimit,        Double_t RightLimit)\n");
- printf("           FitDoublePeak(TH1F *HistogramName, Double_t LeftLimit_Peak_1, Double_t RightLimit_Peak_1,\n");
- printf("                                              Double_t LeftLimit_Peak_2, Double_t RightLimit_Peak_2)\n");
- printf("   DeconvoluteDoublePeak(TH1F *HistogramName, Double_t LeftLimit_Peak_1, Double_t RightLimit_Peak_1,\n");
- printf("                                              Double_t LeftLimit_Peak_2, Double_t RightLimit_Peak_2)\n");
- printf("---------------------------------------------------------------------------------------------\n");
- printf("---------------------------------------------------------------------------------------------\n");
- printf(" * Information\n");
- printf("---------------------------------------------------------------------------------------------\n");
- printf(" *     TH1F : histograms with one float per channel. Maximum precision 7 digits.\n");
- printf(" * Double_t : the same as 'double' - Float 8 bytes\n");
- printf(" *  Float_t : the same as 'float'  - Float 4 bytes\n");
- printf("---------------------------------------------------------------------------------------------\n");
- printf("   Have a Nice Work!\n");
- printf("=============================================================================================\n");*/
-}
-
-void FindSinglePeak(TH1F *hist, Double_t gEnergy)
-{
- gBinW = hist->GetBinWidth(1);
- gLowX = gEnergy - gBinW*10.;
- gUpX  = gEnergy + gBinW*10.;
- hist->GetXaxis()->SetRange(gLowX,gUpX);
- FitSinglePeak(hist, gLowX, gUpX);
-}
-
-void FitSinglePeak(TH1F *hist, Double_t gLowX, Double_t gUpX)
-{
- if(gLowX < gUpX)
-  { 
-// *** Creating the function of the form 'gaus_lbg' defined above ***
-   TF1 fitfunc("gauss_linbg",gaus_lbg, 0, 1, 5);
-// *** Obtaining and specifying the start values for the fit ***
-   gContent = hist->Integral(hist->FindBin(gLowX),hist->FindBin(gUpX)); 
-   gMean    = 0.5 * ( gLowX + gUpX);  
-   gSigma   = 0.3 * ( gUpX  - gLowX); 
-   gBinW = hist->GetBinWidth(1);
-//   printf("__________________\n_The Start Values_\n  Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d\n__________________\n",gBinW,gMean,gContent,gSigma);
-   fitfunc.SetParameters(0, 0, gSigma, gContent, gMean); 
-   fitfunc.SetRange(gLowX, gUpX);
   
-   fitfunc.SetParName(0,"BgConstant");
-   fitfunc.SetParName(1,"BgSlope   ");
-   fitfunc.SetParName(2,"Sigma     ");
-   fitfunc.SetParName(3,"Content   ");
-   fitfunc.SetParName(4,"Mean      ");
+  ////////////////////////////////////////////////////////////////////////////////
+  ///// Define some constants, and initial check
+  ////////////////////////////////////////////////////////////////////////////////
+  
+  static Float_t
+    sqrt2pi = TMath::Sqrt(2*TMath::Pi()),
+    sqrt2 = TMath::Sqrt(2.);
+   
 
-// *** Fitting: 'R' means within the range specified above ***
-   hist->Fit("gauss_linbg", "R", "SAME");
-
-   gBgConstant = fitfunc.GetParameter(0);
-   gBgSlope    = fitfunc.GetParameter(1);
-   gSigma      = fitfunc.GetParameter(2);
-   gContent    = fitfunc.GetParameter(3);
-   gMean       = fitfunc.GetParameter(4);
-   gChi2pNDF   = fitfunc.GetChisquare() / fitfunc.GetNDF();
-
-   printf("      Chi Square: %f\n",fitfunc.GetChisquare());
-   printf("            FWHM: %f +- %f\n",2*gSigma*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(2));
-  } else cout << "Couldn't fit! Error: The Lower Limit is larger than the Upper Limit!" << endl;
+  // Force width to be greater then zero
+  if (par[2] <= 0) {
+    par[2]=1;
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+  ///// Evaluate the Gaussian
+  ////////////////////////////////////////////////////////////////////////////////
+  
+  // Argument of the exponential
+  Double_t arg = (x[0] - par[4])/(sqrt2*par[2]);
+  // Calculate linear background: (bg + lbg)
+  Double_t lbg = par[0] + x[0]*par[1];
+  // Calculate gaussian:
+  Double_t gausval = gBinW/(sqrt2pi*par[2]) * par[3] * exp(-arg*arg);
+   
+   return lbg + gausval;
 }
+
+
+
+
+//_____________________________________________________
 //_____________________________________________________
 
-void DeconvoluteDoublePeak(TH1F *hist, Double_t gLowX_1, Double_t gUpX_1, Double_t gLowX_2, Double_t gUpX_2)
-{
- if(gLowX_1 < gUpX_1)
-  {
- if(gLowX_2 < gUpX_2)
-  {
-// *** Creating the function of the form '2_gaus_lbg' defined above ***
-   TF1 fitfunc("db_gauss_linbg",db_gaus_lbg, 0, 1, 7);
-// *** Obtaining and specifying the start values for the fit ***
-   gBinW      = hist->GetBinWidth(1);
-   gContent_1 = gBinW*(hist->Integral(hist->FindBin(gLowX_1),hist->FindBin(gUpX_1)));
-   gContent_2 = gBinW*(hist->Integral(hist->FindBin(gLowX_2),hist->FindBin(gUpX_2)));
-// *** Searching for maximum Y value through the bins specified by limits
-   int i, i_1, i_2;
-   Double_t V, V_max;
+
+void terminal_input(Int_t event, Int_t x, Int_t y, TObject *selected) {
+
+
+  if(event==24){ //evento da tastiera su TPad
+
+    //gPad->GetEventX()==99 // c
+
+    if(gPad->GetEventX() == 101) { // e
+      in = "e";
+      ica=1;
+         TCanvas *c = (TCanvas *) gTQSender;
+   printf("Canvas %s: event=%d, x=%d, y=%d, selected=%s\n", c->GetName(),
+          event, x, y, selected->IsA()->GetName());
+      return;
+    }
+    if(gPad->GetEventX() == 113) { // q
+      in = "q";
+      ica=1;
+      return;
+    }
+    if(gPad->GetEventX() == 110) { // n
+      in = "n";
+      ica=1;
+      return;
+    }
+  }
    
-   i_1 = int(hist->FindBin(gLowX_1));
-   i_2 = int(hist->FindBin(gUpX_1));
-   V_max = hist->GetBinContent(i_1);
-   for(i = i_1; i <= i_2; i++)
-    {
-     V = hist->GetBinContent(i);
-     if(V > V_max)
-      {
-       V_max = V;
-       gMean_1 = double(i);
-      }
-    }
-   gMean_1 = gBinW*gMean_1; 
-
-   i_1 = int(hist->FindBin(gLowX_2));
-   i_2 = int(hist->FindBin(gUpX_2));
-   V_max = hist->GetBinContent(i_1);
-   for(i = i_1; i <= i_2; i++)
-    {
-     V = hist->GetBinContent(i);
-     if(V > V_max)
-      {
-       V_max = V;
-       gMean_2 = double(i);
-      }
-    }
-   gMean_2 = gBinW*gMean_2; 
-
-   gSigma     = 0.5 * (0.3 * (gUpX_1 - gLowX_1) + 0.3 * (gUpX_2 - gLowX_2));
-   printf("__________________\n_Peak 1: The Start Values_\n  Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d\n__________________\n",gBinW,gMean_1,gContent_1,gSigma);
-   printf("__________________\n_Peak 2: The Start Values_\n  Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d\n__________________\n",gBinW,gMean_2,gContent_2,gSigma);
-   fitfunc.SetParameters(0, 0, gSigma, gContent_1, gMean_1, gContent_2, gMean_2);
-   fitfunc.SetRange(gLowX_1, gUpX_2);
-  
-   fitfunc.SetParName(0,"BgConstant");
-   fitfunc.SetParName(1,"BgSlope   ");
-   fitfunc.SetParName(2,"Sigma     ");
-   fitfunc.SetParName(3,"Content 1 ");
-   fitfunc.SetParName(4,"Mean 1    ");
-   fitfunc.SetParName(5,"Content 2 ");
-   fitfunc.SetParName(6,"Mean 2    ");
-
-// *** Fitting: 'R' means within the range specified above ***
-   hist->Fit("db_gauss_linbg", "R", "SAME");
-
-   gBgConstant = fitfunc.GetParameter(0);
-   gBgSlope    = fitfunc.GetParameter(1);
-   gSigma      = fitfunc.GetParameter(2);
-   gContent_1  = fitfunc.GetParameter(3);
-   gMean_1     = fitfunc.GetParameter(4);
-   gContent_2  = fitfunc.GetParameter(5);
-   gMean_2     = fitfunc.GetParameter(6);
-   gChi2pNDF   = fitfunc.GetChisquare() / fitfunc.GetNDF();
-
-   printf("      Chi Square: %f\n",fitfunc.GetChisquare());
-   printf("            FWHM: %f +- %f\n",2*gSigma*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(2));
-  } else cout << "Couldn't fit! Error: Peak 2: The Lower Limit is larger than the Upper Limit!" << endl;
-  } else cout << "Couldn't fit! Error: Peak 1: The Lower Limit is larger than the Upper Limit!" << endl;
 }
-//_____________________________________________________
+/*
+    // Insert Point when in Terminal Input
 
-void FitDoublePeak(TH1F *hist, Double_t gLowX_1, Double_t gUpX_1, Double_t gLowX_2, Double_t gUpX_2)
-{
- if(gLowX_1 < gUpX_1)
-  {
- if(gLowX_2 < gUpX_2)
-  {
-// *** Creating the function of the form '2_gaus_lbg' defined above ***
-   TF1 fitfunc("db_gauss_linbg_diff",db_gaus_lbg_diff, 0, 1, 8);
-// *** Obtaining and specifying the start values for the fit ***
-   gBinW      = hist->GetBinWidth(1);
-   gContent_1 = gBinW*(hist->Integral(hist->FindBin(gLowX_1),hist->FindBin(gUpX_1)));
-   gContent_2 = gBinW*(hist->Integral(hist->FindBin(gLowX_2),hist->FindBin(gUpX_2)));
-// *** Searching for maximum Y value through the bins specified by limits
-   int i, i_1, i_2;
-   Double_t V, V_max;
-   
-   i_1 = int(hist->FindBin(gLowX_1));
-   i_2 = int(hist->FindBin(gUpX_1));
-   V_max = hist->GetBinContent(i_1);
-   for(i = i_1; i <= i_2; i++)
-    {
-     V = hist->GetBinContent(i);
-     if(V > V_max)
-      {
-       V_max = V;
-       gMean_1 = double(i);
-      }
-    }
-   gMean_1 = gBinW*gMean_1; 
-
-   i_1 = int(hist->FindBin(gLowX_2));
-   i_2 = int(hist->FindBin(gUpX_2));
-   V_max = hist->GetBinContent(i_1);
-   for(i = i_1; i <= i_2; i++)
-    {
-     V = hist->GetBinContent(i);
-     if(V > V_max)
-      {
-       V_max = V;
-       gMean_2 = double(i);
-      }
-    }
-   gMean_2 = gBinW*gMean_2; 
-
-   gSigma_1 = 0.3 * (gUpX_1 - gLowX_1);
-   gSigma_2 = 0.3 * (gUpX_2 - gLowX_2);
-   
-   printf("__________________\n_Peak 1: The Start Values_\n  Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d\n__________________\n",gBinW,gMean_1,gContent_1,gSigma);
-   printf("__________________\n_Peak 2: The Start Values_\n  Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d\n__________________\n",gBinW,gMean_2,gContent_2,gSigma);
-   fitfunc.SetParameters(0, 0, gSigma_1, gContent_1, gMean_1, gSigma_2, gContent_2, gMean_2);
-   fitfunc.SetRange(gLowX_1, gUpX_2);
+   if(event==2) { //input da mouse ??? controllare
+     float px=gPad->AbsPixeltoX(x);
+     float py=gPad->AbsPixeltoY(y);
+     py=gPad->PadtoY(py);
+     float uymin=gPad->GetUymin();
+     float uymax=gPad->GetUymax();
+     
+     if(px>=gPad->GetUxmin() && px<=gPad->GetUxmax() && py>=gPad->PadtoY(uymin) && py<=gPad->PadtoY(uymax)) {
+       TMarker* m = new TMarker(px,py,3);
+       m->SetMarkerColor(2);
+       m->SetMarkerSize(3);
+       m->Draw();
+       
+	 //for(int j=0;j<np;j++) {
+	 //m[j]->Draw();
+	 //}
+       
+       gPad->Modified();
+       gPad->Update();
+	 //np++;
+        }
+     }
   
-   fitfunc.SetParName(0,"BgConstant");
-   fitfunc.SetParName(1,"BgSlope   ");
-   fitfunc.SetParName(2,"Sigma 1   ");
-   fitfunc.SetParName(3,"Content 1 ");
-   fitfunc.SetParName(4,"Mean 1    ");
-   fitfunc.SetParName(5,"Sigma 2   ");
-   fitfunc.SetParName(6,"Content 2 ");
-   fitfunc.SetParName(7,"Mean 2    ");
-
-// *** Fitting: 'R' means within the range specified above ***
-   hist->Fit("db_gauss_linbg_diff", "R", "SAME");
-
-   gBgConstant = fitfunc.GetParameter(0);
-   gBgSlope    = fitfunc.GetParameter(1);
-   gSigma_1    = fitfunc.GetParameter(2);
-   gContent_1  = fitfunc.GetParameter(3);
-   gMean_1     = fitfunc.GetParameter(4);
-   gSigma_2    = fitfunc.GetParameter(5);
-   gContent_2  = fitfunc.GetParameter(6);
-   gMean_2     = fitfunc.GetParameter(7);
-   gChi2pNDF   = fitfunc.GetChisquare() / fitfunc.GetNDF();
-
-   printf("      Chi Square: %f\n",fitfunc.GetChisquare());
-   printf("            FWHM 1: %f +- %f\n",2*gSigma_1*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(2));
-   printf("            FWHM 2: %f +- %f\n",2*gSigma_2*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(5));
-  } else cout << "Couldn't fit! Error: Peak 2: The Lower Limit is larger than the Upper Limit!" << endl;
-  } else cout << "Couldn't fit! Error: Peak 1: The Lower Limit is larger than the Upper Limit!" << endl;
 }
+*/

@@ -1,0 +1,34 @@
+MPR 5
+strip #9 
+pulser 2488 / alpha 2717 = 0.916 (HPLOT)
+pulser 15900 / alpha 18176 = 0.875 (FEBEX)
+ 
+
+strip #13 
+pulser 2398/ alpha 2607= 0.919
+pulser 15178 / alpha 18205 = 0.834
+
+============
+ MPR-64 5
+============
+strip #9 
+pulser 2608 / alpha 2722 = 0.957 (HPLOT)
+pulser 15900 / alpha 18176 = 0.875 (FEBEX)
+ 
+
+strip #13 
+pulser 2477 / alpha 2719 = 0.911 (HPLOT)
+pulser 15178 / alpha 18205 = 0.834 (FEBEX)
+
+
+============
+ MPR-64 1
+============
+strip #9 
+pulser 2538 / alpha 2638 = 0.962 (HPLOT)
+pulser 15720 / alpha 17885 = 0.879 (FEBEX)
+ 
+
+strip #13 
+pulser 2329 / alpha 2669 = 0.873 (HPLOT)
+pulser 14321 / alpha 17935 = 0.798 (FEBEX)
