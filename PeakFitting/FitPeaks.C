@@ -18,37 +18,43 @@
 #include "TString.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TLine.h"
+#include "TSystem.h"
 #include <TQObject.h>
 
-TFile* InputFile = new TFile("DSSD_3178-11_Front.root");
 
+////////// Function definitions
+// Gaussian function (with linear background)
 Double_t gaus_lbg(Double_t *x, Double_t *par);
+// Fitting a single peak interactively
 void FitSinglePeakInteractively(TH1F *hist);
+// Terminal input mode for choosing an extreme of the peak
+void terminal_input_extremes(Int_t event, Int_t x, Int_t y, TObject *selected);
+// Terminal input mode for confirming/rejecting the fit
+void terminal_input_check(Int_t event, Int_t x, Int_t y, TObject *selected);
+// Clear the canvas in order to attempt another fit
+void ClearTheCanvas(TH1F *hist);
 
 
-int ica;
-string in;
-void terminal_input(Int_t event, Int_t x, Int_t y, TObject *selected);
+///////// Help variables
+int ica; // use to terminate terminal input mode: 0 loop, 1 exit
+string in; // string value of the pressed value in terminal input
+Bool_t ExtremeIsValid=false; // true when an extreme value is valid
+Bool_t FitIsGood=false; // true when the fit is good, false if fit needs to be repeated
+Bool_t StripIsBroken=false; // true if the fit is broken, and there is nothing to fit
 
-Double_t gBgConstant, gBgSlope, gContent, gMean, gSigma, gBinW, gChi2pNDF;
 
+// Function parameters
+Double_t gBgConstant, gBgSlope, gContent, gMean, gSigma, gFWHM, gMax, gBinW, gChi2pNDF;
+// Extreme values of the current fit
+Double_t gUpX, gLowX;
+// Temporary value stored when clicking on gPad
+Double_t px, py, uymin, uymax;
+// Value of the resolution to store in TTree
+Double_t Resolution;
+// Strip Number
+Int_t StripNo;
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-///// Ouput: File and Tree
-////////////////////////////////////////////////////////////////////////////////
-
-Double_t LowerX, UpperX, Mean, FWHM, Resolution;
-
-//TTree* OutputTree = new TTree("OutputTree", "Peak Fitting");
-//OutputTree->Branch("LowX", &LowerX,     "LowX/D");
-//OutputTree->Branch("UpX" , &UpperX,     "UpX/D" );
-//OutputTree->Branch("Mean", &Mean,       "Mean/D");
-//OutputTree->Branch("FWHM", &FWHM,       "FWHM/D");
-//OutputTree->Branch("Res" , &Resolution, "Resolution/D");
-
-//TFile* OutputFile = new TFile();
 
 //_____________________________________________________
 //_____________________________________________________
@@ -63,100 +69,169 @@ Double_t LowerX, UpperX, Mean, FWHM, Resolution;
 //
 // The Fit will be done interactively, and taken care by FitPeakInteractively(hist)
 
-void FitStripsInteractively() {//TString OutputFile_Name) {
-  Int_t strip;
-  for(strip=0;strip<32;strip++) {
-    
+void FitStripsInteractively(TString InputFile_Name, TString OutputFile_Name)
+{
+
+  // Output Tree
+  TTree* OutputTree = new TTree("Am241Tree", "Peak Fitting for 241Am");
+  // Prepare the Branches
+  OutputTree->Branch("Strip", &StripNo,    "Strip/I");
+  OutputTree->Branch("LowX",  &gLowX,      "LowX/D");
+  OutputTree->Branch("UpX" ,  &gUpX,       "UpX/D" );
+  OutputTree->Branch("Mean",  &gMean,      "Mean/D");
+  OutputTree->Branch("FWHM",  &gFWHM,      "FWHM/D");
+  OutputTree->Branch("Resolution" ,  &Resolution, "Resolution/D");
+
+  // Output File
+  TFile* OutputFile = new TFile(OutputFile_Name, "RECREATE");
+
+  // Input file:
+  // The file should contain multiple histograms: h0,....,h31
+  TFile* InputFile = new TFile(InputFile_Name);
+
+
+  // Loop on every strip
+  for(StripNo=1;StripNo<=32;StripNo++) {
     TString HistStrip_Name = "h";
-    HistStrip_Name.Append(char(strip));
+    HistStrip_Name.Append(Form("%d",StripNo-1));
     TH1F* HistStrip = (TH1F*)InputFile->Get(HistStrip_Name);
-    
+    printf("This is the name of the histogram %s\n",HistStrip_Name.Data());
+
     FitSinglePeakInteractively(HistStrip);
+    OutputTree->Fill();
   }
+
+  std::cout << "Printing the Full Tree" << std::endl;
+  OutputTree->Print();
+
+  OutputFile->cd();
+  OutputTree->Write();
+  OutputFile->Write();
+  OutputFile->Close();
+
 }
 
 
 //_____________________________________________________
 //_____________________________________________________
 
- 
+
 // FitSinglePeakInteractively()
 //
 // This function will fit a peak, and output the peak parameters.
 //
-// The function takes only the histogram name, and let the user select the extremes of the fitting region.
-// Selecting the x-region to fit is done interactivel clicking with the mouse on the x-axis.
+// The function takes only the histogram name,
+// and let the user select the extremes of the fitting region.
+// Selecting the x-region to fit is done interactively
+// clicking with the mouse wheel on the x-axis.
 //
-// The output will be visible on terminal, and some of the parameters recorde on file.
+// The output will be visible on terminal,
+// and the parameters recorde on file.
 
-void FitSinglePeakInteractively(TH1F *hist) {
+
+void FitSinglePeakInteractively(TH1F *hist)
+{
+
+  // Use this canvas to draw the  histogram
+  TCanvas* Canvas = new TCanvas("Canvas","Fit Canvas",2800,800);
 
 
-      
   ////////// Creating the function of the form 'gaus_lbg' defined in gaus_lbg
-  TF1 fitfunc("gauss_linbg",gaus_lbg, 0, 1, 5);
+  TF1 fitfunc("gaus_linbg",gaus_lbg, 0, 1, 5);
+  // Assigning names to the function parameters
   fitfunc.SetParName(0,"BgConstant");
   fitfunc.SetParName(1,"BgSlope   ");
   fitfunc.SetParName(2,"Sigma     ");
   fitfunc.SetParName(3,"Content   ");
   fitfunc.SetParName(4,"Mean      ");
-
-  ////////// Select extremes interactively from Canvas
-  TCanvas* Canvas = new TCanvas("Canvas","Fit Canvas",1200,900); 
-  Double_t gLowX= 19100, gUpX = 19260;
-  
   hist->Draw();
-  
-  
-  ////////// Suspend the program
-  Canvas->Modified();
-  Canvas->Update();
-      
-  ica=0;
-  cout << "e for another event, q for exit" << endl;
-
-  //connette il canvas a un evento grafico (non chiarissimo come funziona)
-  Canvas->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
-		  "terminal_input(Int_t,Int_t,Int_t,TObject*)");
-  
-  while(ica!=1){
-    usleep(100);
-    gClient->HandleInput();//fondamentale, se no non funziona
-  }
-  
-  Canvas->Disconnect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)");
 
 
-  
+  // Loop until user is satisfied with the fit
+  FitIsGood=false;
+  while(FitIsGood!=true) {
 
-  
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /////  Terminal Input: Select Lower Extreme of the Peak
+    ////////////////////////////////////////////////////////////////////////////////
 
 
-  ////////////////////////////////////////////////////////////////////////////////
-  ///// Fitting the Peak
-  ////////////////////////////////////////////////////////////////////////////////
-  
-  if(gLowX < gUpX)
+    ExtremeIsValid=false;
+    while(ExtremeIsValid!=true) {
+      std::cout << "Click on LOWER EXTREME of the peak" << std::endl;
+      Canvas->Modified();
+      Canvas->Update();
+      ica=0;
+
+      //Connect Canvas to Graphic Event
+      Canvas->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+                      "terminal_input_extremes(Int_t,Int_t,Int_t,TObject*)");
+      while(ica!=1){
+        usleep(100);
+        gClient->HandleInput();
+      }
+      Canvas->Disconnect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)");
+    }
+
+    gLowX=px;
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /////  Terminal Input: Select Upper Extreme of the Peak
+    ////////////////////////////////////////////////////////////////////////////////
+
+
+    ExtremeIsValid=false;
+    while(ExtremeIsValid!=true) {
+      std::cout << "Click on UPPER EXTREME of the peak" << std::endl;
+
+      Canvas->Modified();
+      Canvas->Update();
+      ica=0;
+
+      //Connect Canvas to Graphic Event
+      Canvas->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+                      "terminal_input_extremes(Int_t,Int_t,Int_t,TObject*)");
+      while(ica!=1){
+        usleep(100);
+        gClient->HandleInput();
+      }
+      Canvas->Disconnect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)");
+    }
+
+    gUpX=px;
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ///// Fitting the Peak
+    ////////////////////////////////////////////////////////////////////////////////
+
+
+    if(gLowX < gUpX)
     {
-      
+
       ///// Obtaining and specifying the start values for the fit
-      
-      gContent = hist->Integral(hist->FindBin(gLowX),hist->FindBin(gUpX)); 
-      gMean    = 0.5 * ( gLowX + gUpX);  
-      gSigma   = 0.3 * ( gUpX  - gLowX); 
+
+      gContent = hist->Integral(hist->FindBin(gLowX),hist->FindBin(gUpX));
+      gMean    = 0.5 * ( gLowX + gUpX);
+      gSigma   = 0.3 * ( gUpX  - gLowX);
       gBinW = hist->GetBinWidth(1);
-      
+
       //   printf("__________________");
       //   printf("_The Start Values_");
       //   printf("Bin Width: %d\n Mean Value: %d\n    Content: %d\n      Sigma: %d",gBinW,gMean,gContent,gSigma);
       //   printf("__________________");
-      
-      fitfunc.SetParameters(0, 0, gSigma, gContent, gMean); 
+
+      fitfunc.SetParameters(0, 0, gSigma, gContent, gMean);
       fitfunc.SetRange(gLowX, gUpX);
 
-      ///// Fitting: 'R' means within the range specified above
-      
-      hist->Fit("gauss_linbg", "R", "SAME");
+      ////////// Fitting: 'R' means within the range specified above
+
+      hist->Fit("gaus_linbg", "R", "SAME");
+      TF1 *fitting_function = hist->GetFunction("gaus_linbg");
+      fitting_function->SetLineColor(2);
+      fitting_function->SetLineWidth(3);
 
       gBgConstant = fitfunc.GetParameter(0);
       gBgSlope    = fitfunc.GetParameter(1);
@@ -164,33 +239,92 @@ void FitSinglePeakInteractively(TH1F *hist) {
       gContent    = fitfunc.GetParameter(3);
       gMean       = fitfunc.GetParameter(4);
       gChi2pNDF   = fitfunc.GetChisquare() / fitfunc.GetNDF();
+      gMax        = gaus_lbg(&gMean,fitfunc.GetParameters());
+      gFWHM       = 2*gSigma*sqrt(2*log(2));
+      Resolution = (gFWHM/gMean)*100;
 
       printf("      Chi Square: %f\n",fitfunc.GetChisquare());
-      printf("            FWHM: %f +- %f\n",2*gSigma*sqrt(2*log(2)),2*sqrt(2*log(2))*fitfunc.GetParError(2));
+      printf("            FWHM: %f +- %f\n",gFWHM,2*sqrt(2*log(2))*fitfunc.GetParError(2));
 
 
-      ////////////////////////////////////////////////////////////////////////////////
-      ///// Draw the fitting function, and ask for satisfaction
-      ////////////////////////////////////////////////////////////////////////////////
+      // TPad current_pad = (TVirtualPad)gROOT->GetSelectedPad()
+      TLine *Mean_line = new TLine(gMean,0,gMean,gMax);
+      Mean_line->SetVertical(true);
+      Mean_line->SetLineColor(2);
+      Mean_line->SetLineWidth(3);
+      Mean_line->Draw();
 
-      
-      
+      TLine *FWHM_line = new TLine(gMean-gFWHM/2,gMax/2,gMean+gFWHM/2,gMax/2);
+      FWHM_line->SetHorizontal(true);
+      FWHM_line->SetLineColor(2);
+      FWHM_line->SetLineWidth(3);
+      FWHM_line->Draw();
 
-      ////////////////////////////////////////////////////////////////////////////////
-      ///// Store the value in a TTree
-      ////////////////////////////////////////////////////////////////////////////////
-     
-      
+
+
+      gPad->Modified();
+      gPad->Update();
     } // end if
-  
-  ///// Inconsistent limit
-  else std::cout << "Couldn't fit! Error: The Lower Limit is larger than the Upper Limit!" << std::endl;
-  
-}
+
+
+    ////////// Inconsistent limit
+    else {
+      std::cout << "Couldn't fit! Error: The Lower Limit is larger than the Upper Limit!" << std::endl;
+      std::cout << "Try again a to select new limits:" << std::endl;
+      FitIsGood=false;
+      ClearTheCanvas(hist);
+      continue;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    ////////// Terminal Input: User-check of the fit: confirm or reject
+    //////////////////////////////////////////////////////////////////////////////
+
+
+    std::cout << "Confirm or Reject the Fit?" << std::endl;
+    std::cout << "Press \"e\" to confirm, \"q\" to reject, and \"c\" if strip is broken" << std::endl;
+
+    Canvas->Modified();
+    Canvas->Update();
+    ica=0;
+
+    //Connect Canvas to Graphic Event
+    Canvas->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+                    "terminal_input_check(Int_t,Int_t,Int_t,TObject*)");
+    while(ica!=1){
+      usleep(100);
+      gClient->HandleInput();
+    }
+    Canvas->Disconnect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)");
+
+    // Remove previous fit
+    ClearTheCanvas(hist);
+
+    ////////// If the strip is broken the fit has no meaning, save -1 value as flag.
+    if(StripIsBroken) {
+      gLowX = -1;
+      gUpX  = -1;
+      gMean = -1;
+      gFWHM = -1;
+      Resolution = -1;
+    }
+  } // end While(FitIsGood)
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  ///// Clear Canvas for new fit
+  //////////////////////////////////////////////////////////////////////////////
+
+
+  if (Canvas) { Canvas->Close(); gSystem->ProcessEvents(); }
+
+} // end FitPeakInteractively()
 
 
 //_____________________________________________________
 //_____________________________________________________
+
 
 // gaus_lbg()
 //
@@ -203,98 +337,162 @@ void FitSinglePeakInteractively(TH1F *hist) {
 //   par[3] gauss0 constant
 //   par[4] gauss0 mean
 //
-// The function evaluates the gaussian in the x-value given, and return the corresponding y-value.
+// The function evaluates the gaussian in the x-value given,
+// and return the corresponding y-value.
+
 
 Double_t gaus_lbg(Double_t *x, Double_t *par)
 {
-  
-  ////////////////////////////////////////////////////////////////////////////////
-  ///// Define some constants, and initial check
-  ////////////////////////////////////////////////////////////////////////////////
-  
-  static Float_t
-    sqrt2pi = TMath::Sqrt(2*TMath::Pi()),
-    sqrt2 = TMath::Sqrt(2.);
-   
 
+  // Define some constants
+  static Float_t
+      sqrt2pi = TMath::Sqrt(2*TMath::Pi()),
+      sqrt2 = TMath::Sqrt(2.);
   // Force width to be greater then zero
   if (par[2] <= 0) {
     par[2]=1;
   }
-  ////////////////////////////////////////////////////////////////////////////////
-  ///// Evaluate the Gaussian
-  ////////////////////////////////////////////////////////////////////////////////
-  
+
+  ////////// Evaluate the Gaussian
+
   // Argument of the exponential
   Double_t arg = (x[0] - par[4])/(sqrt2*par[2]);
   // Calculate linear background: (bg + lbg)
   Double_t lbg = par[0] + x[0]*par[1];
   // Calculate gaussian:
   Double_t gausval = gBinW/(sqrt2pi*par[2]) * par[3] * exp(-arg*arg);
-   
-   return lbg + gausval;
+
+  return lbg + gausval;
+
 }
 
 
-
-
 //_____________________________________________________
 //_____________________________________________________
 
 
-void terminal_input(Int_t event, Int_t x, Int_t y, TObject *selected) {
+// terminal_input_check()
+//
+// This function acquire a pressed key by the user,
+// and accept[e], reject[q] or consider the strip as broken(i.e. no peak at all) [c].
+// Note that the key must be pressed while the mouse is on the pad to work properly.
 
+
+void terminal_input_check(Int_t event, Int_t x, Int_t y, TObject *selected)
+{
 
   if(event==24){ //evento da tastiera su TPad
 
-    //gPad->GetEventX()==99 // c
-
-    if(gPad->GetEventX() == 101) { // e
-      in = "e";
+    if(gPad->GetEventX()==99) { // c
+      std::cout << "Strip is broken: There is no peak to fit" << std::endl;
+      std::cout << "The TTree will store with all value set to \"-1\"" << std::endl;
+      std::cout << "Moving to next histogram to fit, if any" << std::endl;
+      FitIsGood=true; // true, since you want to step to next fit
+      StripIsBroken=true; // true, so values will be saved differently
+      in = "c";
       ica=1;
-         TCanvas *c = (TCanvas *) gTQSender;
-   printf("Canvas %s: event=%d, x=%d, y=%d, selected=%s\n", c->GetName(),
-          event, x, y, selected->IsA()->GetName());
       return;
     }
+
+    if(gPad->GetEventX() == 101) { // e
+      std::cout << "Fit accepted" << std::endl;
+      std::cout << "Moving to next histogram to fit, if any" << std::endl;
+      FitIsGood=true;
+      StripIsBroken=false;
+      in = "e";
+      ica=1;
+      return;
+    }
+
     if(gPad->GetEventX() == 113) { // q
+      std::cout << "Fit unacceptable: Repeating the fit" << std::endl;
+      FitIsGood=false;
+      StripIsBroken=false;
       in = "q";
       ica=1;
       return;
     }
-    if(gPad->GetEventX() == 110) { // n
-      in = "n";
-      ica=1;
-      return;
-    }
-  }
-   
-}
-/*
-    // Insert Point when in Terminal Input
+  } // end TPad event
 
-   if(event==2) { //input da mouse ??? controllare
-     float px=gPad->AbsPixeltoX(x);
-     float py=gPad->AbsPixeltoY(y);
-     py=gPad->PadtoY(py);
-     float uymin=gPad->GetUymin();
-     float uymax=gPad->GetUymax();
-     
-     if(px>=gPad->GetUxmin() && px<=gPad->GetUxmax() && py>=gPad->PadtoY(uymin) && py<=gPad->PadtoY(uymax)) {
-       TMarker* m = new TMarker(px,py,3);
-       m->SetMarkerColor(2);
-       m->SetMarkerSize(3);
-       m->Draw();
-       
-	 //for(int j=0;j<np;j++) {
-	 //m[j]->Draw();
-	 //}
-       
-       gPad->Modified();
-       gPad->Update();
-	 //np++;
-        }
-     }
-  
+} // end terminal_input_check()
+
+
+//_____________________________________________________
+//_____________________________________________________
+
+
+// terminal_input_extremes()
+//
+// This function acquire the x (and y) value pressed using the mouse wheel on the pad.
+// The value is then stored and used as extreme of the peak to fit.
+// Marker and Line are drawn in the click position.
+// It also checks whether the click happen in a valid area (i.e. inside the pad),
+// In the opposite case a flag variable is activated.
+
+
+void terminal_input_extremes(Int_t event, Int_t x, Int_t y, TObject *selected)
+{
+
+  if(event==2){ // mouse wheel press
+    px=gPad->AbsPixeltoX(x);
+    py=gPad->AbsPixeltoY(y);
+    py=gPad->PadtoY(py);
+    uymin=gPad->GetUymin();
+    uymax=gPad->GetUymax();
+
+    // Check if extreme is in pad
+    if(px>=gPad->GetUxmin() && px<=gPad->GetUxmax() && py>=gPad->PadtoY(uymin) && py<=gPad->PadtoY(uymax)) {
+      ExtremeIsValid=true;
+
+      // Draw Marker
+      TMarker* m = new TMarker(px,py,3);
+      m->SetMarkerColor(1);
+      m->SetMarkerSize(3);
+      m->Draw();
+
+      //Draw Vertical Line
+      TLine *l = new TLine(px,gPad->GetUymin(),px,gPad->GetUymax());
+      l->SetVertical(true);
+      l->SetLineColor(1);
+      l->SetLineWidth(3);
+      l->Draw();
+
+      gPad->Modified();
+      gPad->Update();
+    }
+
+    else {
+      ExtremeIsValid=false;
+      std::cout << "The value selected is not valid!" << std::endl;
+      std::cout << "Please, try again" << std::endl;
+    }
+
+    ica=1;
+
+  } // event if mouse wheel pressed
+
+} // end terminal_input_extremes()
+
+
+//_____________________________________________________
+//_____________________________________________________
+
+
+// ClearTheCanvas()
+//
+// This function is used to clear the canvas with a the histogram and the relative fit.
+// This is useful not only when fit is done, and another histogram needs to be drawn,
+// but also whenever the fit must be re-done on the same histogram.
+// In that case, line, marker and fit function are cleared,
+// and the user can then proceed to a new fit.
+
+
+void ClearTheCanvas(TH1F *hist)
+{
+  TF1 *fitting_function = hist->GetFunction("gaus_linbg");
+  hist->GetListOfFunctions()->Remove(fitting_function);
+  gPad->Clear();
+  gPad->Modified();
+  gPad->Update();
+  hist->Draw();
 }
-*/
