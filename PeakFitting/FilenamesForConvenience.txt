@@ -1,0 +1,53 @@
+"DSSD_3178-2_Front_80V.root",   // Det1
+"DSSD_3178-2_Back_80V.root",
+
+"DSSD_3178-4_Front_80V.root",   // Det2
+"DSSD_3178-4_Back_80V.root",
+
+"DSSD_3178-8_Front_80V_.root",   // Det3
+"DSSD_3178-8_Back_80V_.root",
+
+"DSSD_3178-10_Front_80V_.root",  // Det4
+"DSSD_3178-10_Back_80V_.root",
+
+"DSSD_3178-11_Front_80V_.root",  // Det5
+"DSSD_3178-11_Back_80V_.root",
+
+"DSSD_3178-13_Front_100V_.root", // Det6
+"DSSD_3178-13_Back_100V_.root",
+
+"DSSD_3178-14_Front_80V_.root",  // Det7
+"DSSD_3178-14_Back_80V_.root",
+
+"DSSD_3178-17_Front_80V_.root",  // Det8
+"DSSD_3178-17_Back_80V_.root",
+
+"DSSD_3178-20_Front_80V_.root",  // Det9
+"DSSD_3178-20_Back_80V_.root",
+
+"DSSD_3178-16_Front_80V_.root",  // Det10
+"DSSD_3178-16_Back_80V_.root",
+
+"DSSD_3337-15_Front_130V_.root"  // Det11
+"DSSD_3337-15_Back_130V_.root"
+
+"DSSD_3337-16_Front_120V_.root"  // Det12
+"DSSD_3337-16_Back_120V_.root"
+
+"DSSD_3337-17_Front_120V_.root"  // Det13
+"DSSD_3337-17_Back_120V_.root"
+
+"DSSD_3337-18_Front_120V_.root"  // Det14
+"DSSD_3337-18_Back_120V_.root"
+
+"DSSD_3337-19_Front_120V_.root"  // Det15
+"DSSD_3337-19_Back_120V_.root"
+
+"DSSD_3337-20_Front_110V_.root"  // Det16
+"DSSD_3337-20_Back_110V_.root"
+
+"DSSD_3363-14_Front_80V_.root"  // Det17
+"DSSD_3363-14_Back_80V_.root"
+
+"DSSD_3363-16_Front_80V_.root"  // Det18
+"DSSD_3363-16_Back_80V_.root"
