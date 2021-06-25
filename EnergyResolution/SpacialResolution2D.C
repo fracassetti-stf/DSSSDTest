@@ -175,7 +175,7 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
   //////////////////////////////////////////////////////////////////////////////
 
 
-  TCanvas* Canvas = new TCanvas("Canvas","241Am Peak Resolution",1140, 1050);
+  TCanvas* Canvas = new TCanvas("Canvas","241Am Peak Resolution",1100, 1000);
 
   Canvas->Range(-1,-1,1,1);
   Canvas->SetFillColor(10);
@@ -186,8 +186,8 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
   Canvas->SetTickx();
   Canvas->SetTicky();
 
-  Canvas->SetLeftMargin(0.10);
-  Canvas->SetRightMargin(0.15);
+  Canvas->SetLeftMargin(0.12);
+  Canvas->SetRightMargin(0.16);
   Canvas->SetTopMargin(0.10);
   Canvas->SetBottomMargin(0.10);
 
@@ -205,7 +205,7 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
 
   ////////// gStyle
 
-  gStyle->SetCanvasPreferGL(true);
+  //gStyle->SetCanvasPreferGL(true);
   //gStyle->SetTitleFontSize(0.16);
 
   //gStyle->SetPalette(kRainBow);
@@ -219,9 +219,9 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
   ////////// Select Title
 
   TString ResHist_Title = "Spatial Energy Resolution: DSSSD ";
-  ResHist_Title.Append(Form("%d",DetectorNo));
+  ResHist_Title.Append(Form("%2d",DetectorNo));
   ResHist_Title.Append(" - ^{241}Am #alpha-decay @5485.56 keV");
-  ResHist_Title.Append(";DSSSD Width [cm] ;DSSSD Height [cm];Resolution x1000 [%]");
+  ResHist_Title.Append(";DSSSD Length [mm] ;DSSSD Width [mm];Resolution x1000 [%]");
   ResHist->SetTitle(ResHist_Title);
   //ResHist->SetTitleOffset(0.5);
 
@@ -332,8 +332,8 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
 
   // Z Axis Options
   TAxis *Zaxis = ResHist->GetZaxis();
-  ResHist->SetMinimum(Int_t(1000*MinResAll)-1);
-  ResHist->SetMaximum(Int_t(1000*MaxResAll)+1);
+  ResHist->SetMinimum(Int_t(1000*MinResAll));
+  ResHist->SetMaximum(Int_t(1000*MaxResAll+0.5));
 
   Zaxis->SetTickLength(0.03);
   Zaxis->SetLabelSize(0.026);;
@@ -403,6 +403,7 @@ void SpatialResolutionHistogram(TString FrontFile_Name,
   Canvas_SaveNamePNG.Append(".png");
   Canvas->SaveAs(Canvas_SaveNamePNG);
 
+  if (Canvas) { Canvas->Close(); gSystem->ProcessEvents();}
 } // end SpatialResolution()
 
 

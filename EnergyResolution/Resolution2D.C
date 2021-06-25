@@ -107,7 +107,7 @@ void Resolution2D(TString PeakToFit, Double_t MaxRes)
   //////////////////////////////////////////////////////////////////////////////
 
 
-  TCanvas* Canvas = new TCanvas("Canvas","241Am Peak Resolution",2560, 1440);
+  TCanvas* Canvas = new TCanvas("Canvas","241Am Peak Resolution",1920, 1080);
   TH2Poly* ResHist = new TH2Poly();
   ResHist->SetName("ResHist");
 

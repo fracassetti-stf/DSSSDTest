@@ -1,9 +1,11 @@
 //   This fitting program was written by Oleg Ivanov
+//   Modified by Stefano Fracassetti
 
-//   Modified (almost completely re-written) by Stefano Fracassetti (KU Leuven).
-//   In June 2021 for fitting the data of DSSSD
-//   Double-Sided Silicon Strip Detectors
-//   for testing their energy resolution.
+//      How to use: (out of date)
+//   1. Load the program in root by typing .L FitPeaks.C - the code will be compiled and all the functions loaded to memory
+//   2. Call GetFitPeaks() to see the list of fitting functions available
+//   3. Call a function of choice with appropriate variables
+//      In case of questions or comments please call me at 016 32 72 73
 
 
 #include "TH1F.h"
