@@ -1,3 +1,5 @@
+// To be updated, I am not sure these info are still valid.
+
 To fit the peak just type as such
 
 .L FitPeaks.C
