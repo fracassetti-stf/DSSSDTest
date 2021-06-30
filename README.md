@@ -13,7 +13,7 @@ The tests were taken for 18 DSSSD using triple-alpha source:
  
  ## Note: Folder Content and Credits still in progress
  I am updating these sections. In particular, if further credits are needed please contact me.  
- `README.md` of the specific folder mentioned above have still to be produced.
+ `README.md` of the specific folder mentioned below still have to be produced.
  
  
  ## Folder Content:
