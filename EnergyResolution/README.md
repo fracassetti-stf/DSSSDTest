@@ -12,3 +12,28 @@ These maros aventaully have not been used since other marcos have been written, 
 
 Note: "FixedForAll" and "DifferentForEachOne" in the filenames refers to the scale used: 
 the first one allows a fair comparison of different detectors, the second allows a clear picture of the resolution of a specific detector.
+
+
+
+# How to use (to be updated)
+
+To produce pdf images:
+```
+.L Resolution.C  
+AllResolution("241Am")
+```
+
+The 241Am will select which file to consider, and also produce proper labels for the images.  
+Notice that all the file must be present for the macro to produce them. I don't know what happens if a file is missing.  
+
+```
+ResolutionHistogram("DSSD_3178-2_Front_80V_241Am.root",  // Front File Name
+                    "DSSD_3178-2_Back_80V_241Am.root",   // Back File Name
+                    "241Am",  // Peak to Fit
+                    1  // Detector Number
+                    MaxRes) // Maz Resolution to be used in plot scale
+```
+
+This will produce only the relative pics.  
+241Am and detno only used for proper labels.  
+241Am also to open correct tree.  
