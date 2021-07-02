@@ -1,5 +1,5 @@
-# DSSSD Test
-Analysed Data of the Double-Sided Silicon Strip Detector @Ku Leuven.  
+# DSSSD Test @KU Leuven
+Analysed Data of the **D**ouble-**S**ided **S**ilicon **S**trip **D**etector @Ku Leuven, Belgium.  
 Tesk performed in 17 May - 10 June 2021 with Febex acquisition system.  
 Partecipants: *Stefano Fracassetti*, *Jozef Klimo*, *Hilde De Witte*, *Alberto Camaiani*, *Mouftahou Latif*.  
 
