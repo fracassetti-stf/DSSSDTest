@@ -15,7 +15,7 @@ I am updating these sections. In particular, if further credits are needed pleas
 `README.md` of the specific folder mentioned below still have to be produced/updated.
  
 ## Folder Content:
-Each subfoler may have a specific `README.md`, which further description of the content.  
+Each subfoler may have a specific `README.md`, with further description of the content.  
 - `Characterization/`: Characterization of the detectors in terms of Leakage Current and Depletion Voltage.
 - `ConversionLMDtoROOT/`: Program to convert the LMD files into ROOT (Root Files containing 32-histograms: h0,...,h31).
 - `Data/`: Data acquired with the DSSSD.
