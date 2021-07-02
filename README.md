@@ -15,11 +15,11 @@ I am updating these sections. In particular, if further credits are needed pleas
 `README.md` of the specific folder mentioned below still have to be produced/updated.
  
 ## Folder Content:
+- `Characterization/`: Characterization of the detectors in terms of Leakage Current and Depletion Voltage.
 Each subfoler may have a specific `README.md`, which further description of the content.
 - `ConversionLMDtoROOT/`: Program to convert the LMD files into ROOT (Root Files containing 32-histograms: h0,...,h31).
 - `Data/`: Data acquired with the DSSSD.
      - `Data/Root/`: Root files containing 32 histogram, which correspond to the spectra acquired with a triple-alpha spectra.
-- `Characterization/`: Characterization of the detectors in terms of Leakage Current and Depletion Voltage.
 - `EnergyResolution/`: RootMacro to extract energy resolution, strip by strip of all the 18 detectors.
 - `PeakFitting/`: RootMarco for fitting the peak from the histograms. In particular an intercatively (and fast) macro has been written, which allows to fit all-strips peaks in reasonable time.
 - `Pictures/`: All the output-images produced in the different steps of the analysis.
