@@ -6,7 +6,7 @@ This program was written starting from another program FitPeaks.C, a program whi
 
 
 
-# Marco: how to use (to be updated)
+# Marco: How to use (to be updated)
 To be updated, I am not sure these info are still valid.  
 
 ## FitPeaksInteractively.C
