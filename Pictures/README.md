@@ -1,6 +1,8 @@
 # Pictures
 This folder contains the results of this analysis. Note that each plot is saved both in `.pdf` and `.png`.
 
+
+
 ## Characterization
 
 ### DepletionVoltage
@@ -21,6 +23,8 @@ For a better comparison with the data sheet, the y-axis is drawn in log10 scale.
 Colors allows to easily distinguish the detectors. 
 For a better comparison with the data sheet, the y-axis is drawn in log10 scale.
 
+
+
 ## EnergyResolution_241
 This are the plots for the energy resolution strip-by-strip for all detectors. The resolution was extracted fitting the <sup>241</sup>Am peak.  
 
@@ -36,8 +40,16 @@ This allow a fair comprison of all detectors.
 This allow to better visualize difference between strips of a single detector.
 
 ### Resolution1D
-### Resolution2D
-### 
+For each detector a 1D bar histogram has been prepared of the energy resolution strip-by-strip. 
+
+### ResolutionAll2D
+Resolution of all-detecotors of all-strips. x-axis is the strip number, y-axis is the detector number, z-axis the resolution in a color-scale. 
+Notice that the detector numer is divided in two the lower cells refer to back strips, the upper ones to front strips. 
+For example the cells centered at y=1.25 are front strips of Det.1, while the cells centered at y=0.75 are back strips of the same detecor.
+
+### SpatialResolution
+This plot shows the energy resolution (z color scale) on the detector surface (x,y). Each value of the detector surface is associated with the energy resolution of the full reconstructed energy (i.e. the sum of the corresponding strips) of a particle impinging in that position . This is obtained by using the resolution of the sum of the relative front and back strip peaks, which is &sigma;<sup>2</sup> = &sigma;<sub>f</sub><sup>2</sup> + &sigma;<sub>b</sub><sup>2</sup>.
+
 
 ## Spectra
 Some example of the spectra acquired, for some of the detectors.
