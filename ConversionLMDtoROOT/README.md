@@ -3,12 +3,15 @@ The program conversion is used to convert lmd files produced with Febex acquisit
 The output of this program will be a Root file containing 32 histogram: h0,....,h31 each one containing the spectra of the relative channel acquired.  
 
 ## How to compile
-The Makefile is used to create the executable: conversion.hh and RootLinkDef.h are needed for the compilation.  
-The file "filenames" must be filled with:
+`Makefile` is used to create the executable,  
+with dependencies `conversion.hh` and `RootLinkDef.h`.   
+
+The file `filenames` must be filled with:
 ```
 1
 <lmd file name to convert into root>
 ```
+and it will produce an output with the same name, but a `.root` extension.
 
 ## Programs
 
