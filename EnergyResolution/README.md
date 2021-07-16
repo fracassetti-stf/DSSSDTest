@@ -1,4 +1,4 @@
-# Energy Resolution
+# EnergyResolution
 These macro allows the visualize the energy resolution, for each detectors, as well as to compare all detectors at once.  
 Histograms (1D and 2D) have been produced in order to have different (visual) output:
 - `Resolution1D.C`: Energy Resolution 1D-Histograms of all strip for each detectors - one figure for each detector, 
@@ -15,7 +15,7 @@ the first one allows a fair comparison of different detectors, the second allows
 
 
 
-# Macro: How to use (to be updated)
+## Root Macro: How to use? (to be updated)
 
 To produce pdf images:
 ```
