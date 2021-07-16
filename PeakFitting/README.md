@@ -1,4 +1,4 @@
-# Peak Fitting
+# PeakFitting
 This folder collect the marco, and the ouptup files of the peak-fitting procedure.  
 - `FitPeaks_241Am/`: Folder containing the output files regarding the fit of the <sup>241</sup>Am peaks. Each file contains a single root tree for 32 entries (one for each strip), with relative peak parameters.
 - `FitPeaks.C` and `FitPeaksInteractively.C` are macros that allows to fit a peak form a spectra (histogram).  
@@ -7,9 +7,7 @@ This folder collect the marco, and the ouptup files of the peak-fitting procedur
 - `FilenamesForConvenience.txt` is just a simple txt file which contains all detectors filenames. It was convenient to have them all listed indeed, so that I did not have to search for them each time. This also eplains the name of the file itself.
 
 
-## Marco: How to use (to be updated)
-To be updated, I am not sure these info are still valid.  
-
+## Root Marco: How to use?
 
 ### FitPeaks.C
 A brief description of the file can be found in the file header. After loading the macro, the function GetFitPeaks() can be called to have some a brief description on the functionalities available here.
