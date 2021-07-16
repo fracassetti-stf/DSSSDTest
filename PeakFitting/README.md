@@ -31,7 +31,7 @@ Changing the second argument ("241Am" in this case) simply determine the file na
 When the program is launched, it will immediately prompt the first histogram (h0). At this point it is convenient to first zoom on the regioin of interest, and then select the extreme of the peak to fit: lower limit, and upper limit, in this order (if not the program will ask you again). The program will show to limit selected in black. When both will be selected, the fit function will be plotted (glbg = gaussian with constant background), as well the mean value and FWHM of the gaussian (in red), and the background value (in blue).  
 
 Having plotted this information, and the value printed at terminal, the user has different possibilities (pressing a keyboard letter - read terminal input for more info):
-- Accept the fit: the fit parameters will be stored in the tree as a new entry. The program will prompt the new spectra to fit.
+- Accept the fit: the fit parameters will be stored in the tree as a new entry. The program will prompt the new spectrum to fit.
 - Reject the fit: the fit will be discarded, and the program will prompt the selection of new extremes.
 - Strip is Broken: a flag value will be stored in the tree (-2), and move to the next spectrum.
 - Fit not possible: a flag value will be stored in the tree (-1), and move to the next spectrum.
