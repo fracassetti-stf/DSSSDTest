@@ -42,7 +42,7 @@ This allow a fair comprison of all detectors.
 This allow to better visualize difference between strips of a single detector.
 
 ### Resolution1D
-For each detector a 1D bar histogram has been prepared of the energy resolution strip-by-strip. 
+For each detector a 1D bar histogram has been prepared of the energy resolution strip-by-strip. In this folder there is also the older version produced with `GraphResolution1D.C` (obsolete).
 
 ### ResolutionAll2D
 Resolution of all-detecotors of all-strips. x-axis is the strip number, y-axis is the detector number, z-axis the resolution in a color-scale. 
