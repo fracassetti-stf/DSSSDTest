@@ -29,13 +29,15 @@ For a better comparison with the data sheet, the y-axis is drawn in log10 scale.
 This are the plots for the energy resolution strip-by-strip for all detectors. The resolution was extracted fitting the <sup>241</sup>Am peak.  
 
 ### How to read the data? 
-- `Broken Strrip`: when a strip is broken (basically no spectum available), the corresponding bar has been laft empty.
+- `Broken Strip`: when a strip is broken (basically no spectum available), the corresponding bar has been laft empty.
 - `High Background`: in case it was not possible to fit a peak for high bg, distorted peak (not gaussian, high low-energy tail) 
 then the value of the resolution has been put on end-scale for 2D histogram, and also indicated in red in case of 1D.  
 
 The plots have been drawn using two y-scale for the resolution: 
 - `FixForAll`: the same y-scale has been used for all detectors. 
-This allow a fair comprison of all detectors.
+This allow a fair comprison of all detectors. 
+  - Max/Min Strip Resolution: 0.45% - 2.8%. In the plots 3% has been used.
+  - Max/Min Spatial Resolution: 0.57% - 4.0%. In the plots 4% has been used.
 - `DifferentForEachOne`: a different y-scale (z-scale for 2D histograms) has been chosen to represent the data of each detector. 
 This allow to better visualize difference between strips of a single detector.
 
