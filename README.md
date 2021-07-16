@@ -10,9 +10,11 @@ The tests were taken for 18 DSSSD using triple-alpha source:
 - All detectors are of the same model, and from the same company: "Micron Semiconductors LTD".
 - The detector configuarion was with floating front/back GR(Guard Ring), and floating front/back FP(Field Plate). Floating = Not Connected. So far, the detectors have always been used in this configuration: The GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. There is not a compelling need to make connections for these addition pins in our case, but the possiblily to actually use the addition pins could be further investigated - this would require different feedthrough PCB.
  
+ 
 ## Note: Folder Content and Credits still in progress
 I am updating these sections. In particular, if further credits are needed please contact me.  
 `README.md` of the specific folder mentioned below still have to be produced/updated.
+ 
  
 ## Folder Content:
 Each subfoler may have a specific `README.md`, with further description of the content.  
@@ -22,15 +24,15 @@ Each subfoler may have a specific `README.md`, with further description of the c
      - `Data/Root/`: Root files containing 32 histogram, which correspond to the spectra acquired with a triple-alpha spectra.
 - `EnergyResolution/`: RootMacro to extract energy resolution, strip by strip of all the 18 detectors.
 - `PeakFitting/`: RootMarco for fitting the peak from the histograms. In particular an intercatively (and fast) macro has been written, which allows to fit all-strips peaks in reasonable time.
-- `Pictures/`: All the output-images produced in the different steps of the analysis.
+- `Results/`: All the results (images) produced in the different steps of the analysis.
 - `PlotStrips/`: RootMarco to plot 16 strips at once, in one Canvas. It offers a fast-check of the strip spectra.  
 - `Pulser/`: Configuration file for the pulser. The pulser was used on one detector, in order to have a feedback on the electronic chain.
 - `README.md`: this file.
 
 
-
 ## Credits:
 To be implemented.
+
 
 ## License:
 I give permission to use/modify/improve the root macro I have written (Stefano Fracassetti) in this folder, as you like and for your purpose,
