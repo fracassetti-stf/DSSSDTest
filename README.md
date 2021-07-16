@@ -1,3 +1,8 @@
+## Note: Folder Content and Credits still in progress
+- `EnergyResolution/README.md` must be completed.
+- Crdits still need to be updated. In particular, if further credits are needed please contact me.  
+
+ 
 # DSSSD Test @KU Leuven
 Analysed Data of the **D**ouble-**S**ided **S**ilicon **S**trip **D**etector @Ku Leuven, Belgium.  
 Tesk performed in 17 May - 10 June 2021 with Febex acquisition system.  
@@ -9,12 +14,7 @@ The tests were taken for 18 DSSSD using triple-alpha source:
 - The last 8 detectors (from number 11 to number 18) were (recently) bought in February 2021 (for this reason refereed as "new detectors"), they were never used before and not even tested.
 - All detectors are of the same model, and from the same company: "Micron Semiconductors LTD".
 - The detector configuarion was with floating front/back GR(Guard Ring), and floating front/back FP(Field Plate). Floating = Not Connected. So far, the detectors have always been used in this configuration: The GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. There is not a compelling need to make connections for these addition pins in our case, but the possiblily to actually use the addition pins could be further investigated - this would require different feedthrough PCB.
- 
- 
-## Note: Folder Content and Credits still in progress
-I am updating these sections. In particular, if further credits are needed please contact me.  
-`README.md` of the specific folder mentioned below still have to be produced/updated.
- 
+
  
 ## Folder Content:
 Each subfoler may have a specific `README.md`, with further description of the content.  
