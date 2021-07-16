@@ -19,7 +19,7 @@ reached the 2-input 32-channel card, so that the strip were not acquired in the
 corret order. It was necessary to implement : Conversion_Front and
 Conversion_Back in order to acquired the signals in the proper order.
 The only difference with the original program is that there is a permutation
-that swap how the histogram, saving them in the correct order.
+that changes the histogram order, saving them in the correct one.
 At this point we can be sure that h0 correspond to first channel and so on.
 The permutation differ from Front and Back because of the pin mapping of our
 feedthroughs, (called Front and Back) in particular the pin-mapping of the Back
@@ -29,4 +29,5 @@ one is reversed in respect to the Front one, which is order normally instead.
 This program differ only for the fact that the histogram have a lower number of
 bin, exactly 5 time less than the original one: not 25000, but 5000.
 This was a good choice for our case, since the bin were clearly too thin for the
-statistics we had acquired.
+statistics we had acquired. The "Rebin" can be done also afterwards, it is not necessary to do it already in the conversion stage.
+Indeed, this program has not been used, and I have rebinned the histogram directly when fitting in the macro `FitPeaksInteractively.C`.
