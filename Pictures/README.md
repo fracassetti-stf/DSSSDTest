@@ -7,19 +7,19 @@ This folder contains the results of this analysis. Note that each plot is saved 
 
 ### DepletionVoltage
 Plots representing the channel corresponing of the <sup>239</sup>Pu peak, in relation to the bias voltage applied.  
-- `AllDSSSD_PeakChannel.pdf/.png`: All detectors on the same plot, this gives a clear overview of all detector. 
+- `AllDSSSD_PeakChannel.pdf`: All detectors on the same plot, this gives a clear overview of all detector. 
 A grey scale has been choosen for the old detectors, adn a red one for the new ones.
-- `OldDSSSD_PeakChannel.pdf/.png`: Only the old detectors are plotted. Colors allows to easily distinguish the detectors.
-- `NewDSSSD_PeakChannel.pdf/.png`: Only the new detectors are plotted. Colors allows to easily distinguish the detectors.
+- `OldDSSSD_PeakChannel.pdf`: Only the old detectors are plotted. Colors allows to easily distinguish the detectors.
+- `NewDSSSD_PeakChannel.pdf`: Only the new detectors are plotted. Colors allows to easily distinguish the detectors.
 
 ### LeakageCurrent
 Leakage current as a function of the bias voltage applied.  
-- `AllDSSSD_Current.pdf/.png`: All detectors on the same plot, this gives a clear overview of all detector. 
+- `AllDSSSD_Current.pdf`: All detectors on the same plot, this gives a clear overview of all detector. 
 A grey scale has been choosen for the old detectors, and a red one for the new ones.
-- `OldDSSSD_CurrentLog.pdf/.png`: Only the old detectors are plotted. 
+- `OldDSSSD_CurrentLog.pdf`: Only the old detectors are plotted. 
 Colors allows to easily distinguish the detectors. 
 For a better comparison with the data sheet, the y-axis is drawn in log10 scale.
-- `NewDSSSD_CurrentLog.pdf/.png`: Only the new detectors are plotted. 
+- `NewDSSSD_CurrentLog.pdf`: Only the new detectors are plotted. 
 Colors allows to easily distinguish the detectors. 
 For a better comparison with the data sheet, the y-axis is drawn in log10 scale.
 
