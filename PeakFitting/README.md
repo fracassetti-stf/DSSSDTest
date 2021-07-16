@@ -4,6 +4,7 @@ This folder collect the marco, and the ouptup files of the peak-fitting procedur
 - `FitPeaks.C` and `FitPeaksInteractively.C` are macros that allows to fit a peak form a spectra (histogram).  
   - `FitPeaks.C` has been written by Oleg Ivanov, it performs the fit of a peak giving through the command line the extrems of the fit. This program also offer different type of functions to use as a fit (gaussian with linear bg, gaussian with linear bg, double guassian with bg, etc).
   - `FitPeaksInteractively.C` has been written by Stefano Fracassetti, starting from the program `FitPeaks.C`, and drastically modified to make it interactive. It performs the fit of a peak (Gaussian with constant background) interactively - with this I mean that the extreme of the peak can be passed to the program directly clicking on the canvas itself, and the user has different option, such as confirming the fit or re-try to fit with other extremes. I was motivated by the fact that the task was to extract energy resolution of 18 Detectors, each one having 64 strips to analyse: I needed something very fast, and reliable at the same time (visual feedback) - in this way the fit of each Root file takes just a few minutes. 
+- `FileNamesForConviniece.txt` is just a simple txt file which contains all detectors filenames. It was convenient to have them all listed indeed, so that I did not have to search for them each time. This also eplains the name of the file itself.
 
 
 ## Marco: How to use (to be updated)
