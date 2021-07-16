@@ -73,7 +73,7 @@ Int_t StripNo;
 //
 // The function takes no parameters, but loop on every strip of a certain DSSSD side.
 //
-// The Fit will be done interactively, and taken care by FitPeakInteractively(hist)
+// The Fit will be done interactively, and taken care by FitSinglePeakInteractively(hist)
 
 void FitStripsInteractively(TString InputFile_Name, TString PeakToFit)
 {
