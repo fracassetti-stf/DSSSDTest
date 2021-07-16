@@ -36,7 +36,7 @@ then the value of the resolution has been put on end-scale for 2D histogram, and
 The plots have been drawn using two y-scale for the resolution: 
 - `FixForAll`: the same y-scale has been used for all detectors. 
 This allow a fair comprison of all detectors.
-- `DifferentForEachOne`: a different y-scale has been chosen to represent the data of each detector. 
+- `DifferentForEachOne`: a different y-scale (z-scale for 2D histograms) has been chosen to represent the data of each detector. 
 This allow to better visualize difference between strips of a single detector.
 
 ### Resolution1D
@@ -44,7 +44,7 @@ For each detector a 1D bar histogram has been prepared of the energy resolution 
 
 ### ResolutionAll2D
 Resolution of all-detecotors of all-strips. x-axis is the strip number, y-axis is the detector number, z-axis the resolution in a color-scale. 
-Notice that the detector numer is divided in two the lower cells refer to back strips, the upper ones to front strips. 
+Notice that every detector number is associated with two rows: the lower cells refer to back strips, the upper ones to front strips. 
 For example the cells centered at y=1.25 are front strips of Det.1, while the cells centered at y=0.75 are back strips of the same detecor.
 
 ### SpatialResolution
