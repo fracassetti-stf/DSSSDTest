@@ -36,4 +36,5 @@ Having plotted this information, and the value printed at terminal, the user has
 - Strip is Broken: a flag value will be stored in the tree (-2), and move to the next spectrum.
 - Fit not possible: a flag value will be stored in the tree (-1), and move to the next spectrum.
 
+Note that, once an option is selected (all apart "Reject the fit"), is not possible to come back to the same spectrum later. The program must be run again.
 This will repeat up to the last spectum (h31), after that the program will terminate, and the tree stored in the corresponding file. For every tree entry the strip number, the extremes of the fit, the mean value, the FWHM the resolution(%) will be stored.
