@@ -1,5 +1,5 @@
-# Pictures
-This folder contains the results of this analysis. Note that each plot is saved both in `.pdf` and `.png`.
+# Results
+This folder contains the results (images) of this analysis. Note that each plot is saved both in `.pdf` and `.png`.
 
 
 
