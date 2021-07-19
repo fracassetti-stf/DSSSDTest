@@ -3,14 +3,9 @@
 
  
 # DSSSD Test @KU Leuven
-Analysed Data of the **D**ouble-**S**ided **S**ilicon **S**trip **D**etector @Ku Leuven, Belgium.  
-Tesk performed in 17 May - 10 June 2021 with Febex acquisition system.  
-
-Contributions:   
-
-
-
-The tests were taken for 18 DSSSD using triple-alpha source: 
+Data Analysis of the **D**ouble-**S**ided **S**ilicon **S**trip **D**etector @Ku Leuven, Belgium.  
+Those measurements have been performed in 17 May - 10 June 2021 with the Febex acquisition system.  
+Characterization and performance of the DSSSD array ( 18 detectors) has been evaluated using a triple-alpha source: 
 - The first 10 detectors (from number 1 to number 10) were bought in November 2017 (and are usaully refered as "old detectors"), they were also already tested last time in March/April 2019, by *Jonas Refsgaard* and *Alice Mentana*, using *SpecMat* GET acquisition system. They were also used in previous experiment, such as GMR in <sup>68</sup>Ni @GANIL(Caen), and in <sup>20</sup>Ne @LNS(Catania).
 - The last 8 detectors (from number 11 to number 18) were (recently) bought in February 2021 (for this reason refereed as "new detectors"), they were never used before and not even tested.
 - All detectors are of the same model, and from the same company: "Micron Semiconductors LTD".
@@ -35,7 +30,8 @@ Each subfoler may have a specific `README.md`, with further description of the c
 
 ## Credits:
 - DSSD data have been collected at the **Katholieke Universiteit Leuven** (Belgium).  
-Contributions: _Stefano Fracassetti_<sup>1</sup>, _Jozef Klimo_<sup>1</sup>, _Hilde De Witte_<sup>1</sup>, _Alberto Camaiani_<sup>1</sup>, _Mouftahou Latif_<sup>1</sup>. 
+Contributions: _Stefano Fracassetti_<sup>1</sup>, _Jozef Klimo_<sup>1</sup>, _Hilde De Witte_<sup>1</sup>, _Alberto Camaiani_<sup>1</sup>, _Mouftahou Latif_<sup>1</sup>.  
+Supervisor: _Riccardo Raabe_<sup>1</sup>
 - The [Charaterization](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Characterization) analysis of the DSSSD has been carried out by _Stefano Fracassetti_<sup>1</sup> and _Jozef Klimo_<sup>1</sup>.
 - The converstion macro [conversion.cc](https://github.com/fracassetti-stf/DSSSDTest/blob/main/ConversionLMDtoROOT/conversion.cc) (from LMD to ROOT) which has been using in this analysis has been written by (to be updated).
 - The [Energy Resolution](https://github.com/fracassetti-stf/DSSSDTest/tree/main/EnergyResolution) macros have been written by _Stefano Fracassetti_<sup>1</sup>.
