@@ -1,19 +1,22 @@
-## Note: Folder Content and Credits still in progress
-- `EnergyResolution/README.md` must be completed.
-- Crdits still need to be updated. In particular, if further credits are needed please contact me.  
+## Note: Credits still in progress
+- Crdits still need to be completed. In particular, if further credits are needed please contact me.  
 
  
 # DSSSD Test @KU Leuven
 Analysed Data of the **D**ouble-**S**ided **S**ilicon **S**trip **D**etector @Ku Leuven, Belgium.  
 Tesk performed in 17 May - 10 June 2021 with Febex acquisition system.  
-Partecipants: *Stefano Fracassetti*, *Jozef Klimo*, *Hilde De Witte*, *Alberto Camaiani*, *Mouftahou Latif*.  
+
+Contributions:   
+
 
 
 The tests were taken for 18 DSSSD using triple-alpha source: 
 - The first 10 detectors (from number 1 to number 10) were bought in November 2017 (and are usaully refered as "old detectors"), they were also already tested last time in March/April 2019, by *Jonas Refsgaard* and *Alice Mentana*, using *SpecMat* GET acquisition system. They were also used in previous experiment, such as GMR in <sup>68</sup>Ni @GANIL(Caen), and in <sup>20</sup>Ne @LNS(Catania).
 - The last 8 detectors (from number 11 to number 18) were (recently) bought in February 2021 (for this reason refereed as "new detectors"), they were never used before and not even tested.
 - All detectors are of the same model, and from the same company: "Micron Semiconductors LTD".
-- The detector configuarion was with floating front/back GR(Guard Ring), and floating front/back FP(Field Plate). Floating = Not Connected. So far, the detectors have always been used in this configuration: The GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. There is not a compelling need to make connections for these addition pins in our case, but the possiblily to actually use the addition pins could be further investigated - this would require different feedthrough PCB.
+- The detector configuarion was with floating front/back GR(Guard Ring), and floating front/back FP(Field Plate). Floating = Not Connected. 
+    - So far, the detectors have always been used in this configuration: The GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. 
+    - There is not a compelling need to make connections for these addition pins in our case, but the possiblily to actually use the addition pins could be further investigated. In particular, noise and lower-resolution in the first and last strips may be reduced in this way. On the other side, this new configuration would require different feedthrough PCB, so new feedthroughs must be produced.
 
  
 ## Folder Content:
@@ -31,9 +34,16 @@ Each subfoler may have a specific `README.md`, with further description of the c
 
 
 ## Credits:
-To be implemented.
+- DSSD data have been collected at the **Katholieke Universiteit Leuven** (Belgium).  
+Contributions: _Stefano Fracassetti_<sup>1</sup>, _Jozef Klimo_<sup>1</sup>, _Hilde De Witte_<sup>1</sup>, _Alberto Camaiani_<sup>1</sup>, _Mouftahou Latif_<sup>1</sup>. 
+- The [Charaterization](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Characterization) analysis of the DSSSD has been carried out by _Stefano Fracassetti_<sup>1</sup> and _Jozef Klimo_<sup>1</sup>.
+- The converstion macro [conversion.cc](https://github.com/fracassetti-stf/DSSSDTest/blob/main/ConversionLMDtoROOT/conversion.cc) - from LMD to ROOT - which has been using in this analysis has been written by (to be updated).
+- The [Energy Resolution](https://github.com/fracassetti-stf/DSSSDTest/tree/main/EnergyResolution) macros have been written by _Stefano Fracassetti_<sup>1</sup>.
+- The program to fit the peak has been written by _Oleg Ivanov_ ([FitPeaks.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaks.C)) and _Stefano Fracassetti_<sup>1</sup> ([FitPeaksInteractively.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaksInteractively.C)).
+- The [Results](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Results) of the analysis have been obtained by _Stefano Fracassetti_<sup>1</sup>, writing or using the different prgram present in this folder.  
 
+<sup>1</sup> Katholieke Universiteit Leuven, Belgium
 
 ## License:
-I give permission to use/modify/improve the root macro I have written (Stefano Fracassetti) in this folder, as you like and for your purpose,
-but always giving credits. For the other program in this folder please refer to section Credits, and ask the corresponding person for usage/modification/sharing of the program itself. Data relative to the DSSSD test should not be used in any way.
+I give permission to use/modify/improve the root macro I have written (_Stefano Fracassetti_) which are present in this folder, as you like and for your purpose,
+but always giving credits. For the other program in this folder please refer to section Credits, and ask the corresponding person for usage/modification/sharing of the program/macro itself. Data relative to the DSSSD test should not be used in any way.
