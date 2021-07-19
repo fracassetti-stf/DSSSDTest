@@ -72,3 +72,9 @@ $ void SpatialResolutionHistogram(TString FrontFile_Names, // Front file
                                   Double_t MaxRes)         // Maximum resolution (%) to use in the plots
 ```
 This function is similar to the one before, but will produce just a single plot, of the desired detector: in fact the previous function loops on this one, for all detectors.
+
+### GraphResolution1D.C
+This macro perfroms the same task as `Resolution1D.C`, using TGraph instead of TH1F. For this purpose the second option is the best, there is no need to run this macro. However, it works properly, and produce a similar output.  
+
+### GraphResolution2D.C
+This macro has been replaced by `Resolution2D.C`, which performs the same task in a better way, using a TH2Poly. Apparently, it is not possible to reach the same result with a TGraph2D.
