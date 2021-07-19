@@ -41,5 +41,8 @@ Supervisor: _Riccardo Raabe_<sup>1</sup>
 <sup>1</sup> Katholieke Universiteit Leuven, Belgium
 
 ## License:
-I give permission to use/modify/improve the root macro I have written (_Stefano Fracassetti_) which are present in this folder, as you like and for your purpose,
-but always giving credits. For the other program in this folder please refer to section Credits, and ask the corresponding person for usage/modification/sharing of the program/macro itself. Data relative to the DSSSD test should not be used in any way.
+Data relative to the DSSSD test should not be used in any way.  
+
+I give permission to use/modify/improve the root macro I have written (_Stefano Fracassetti_) as you like and for your purpose, but always giving credits.  
+
+For the other program in this folder please refer to section Credits, and ask the corresponding person for usage/modification/sharing of the program/macro itself. 
