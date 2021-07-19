@@ -37,7 +37,7 @@ Each subfoler may have a specific `README.md`, with further description of the c
 - DSSD data have been collected at the **Katholieke Universiteit Leuven** (Belgium).  
 Contributions: _Stefano Fracassetti_<sup>1</sup>, _Jozef Klimo_<sup>1</sup>, _Hilde De Witte_<sup>1</sup>, _Alberto Camaiani_<sup>1</sup>, _Mouftahou Latif_<sup>1</sup>. 
 - The [Charaterization](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Characterization) analysis of the DSSSD has been carried out by _Stefano Fracassetti_<sup>1</sup> and _Jozef Klimo_<sup>1</sup>.
-- The converstion macro [conversion.cc](https://github.com/fracassetti-stf/DSSSDTest/blob/main/ConversionLMDtoROOT/conversion.cc) - from LMD to ROOT - which has been using in this analysis has been written by (to be updated).
+- The converstion macro [conversion.cc](https://github.com/fracassetti-stf/DSSSDTest/blob/main/ConversionLMDtoROOT/conversion.cc) (from LMD to ROOT) which has been using in this analysis has been written by (to be updated).
 - The [Energy Resolution](https://github.com/fracassetti-stf/DSSSDTest/tree/main/EnergyResolution) macros have been written by _Stefano Fracassetti_<sup>1</sup>.
 - The program to fit the peak has been written by _Oleg Ivanov_ ([FitPeaks.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaks.C)) and _Stefano Fracassetti_<sup>1</sup> ([FitPeaksInteractively.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaksInteractively.C)).
 - The [Results](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Results) of the analysis have been obtained by _Stefano Fracassetti_<sup>1</sup>, writing or using the different prgram present in this folder.  
