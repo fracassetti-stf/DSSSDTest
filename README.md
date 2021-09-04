@@ -38,7 +38,7 @@ Supervisor: _Riccardo Raabe_<sup>1</sup>
 - The program to fit the peak has been written by _Oleg Ivanov_ ([FitPeaks.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaks.C)) and _Stefano Fracassetti_<sup>1</sup> ([FitPeaksInteractively.C](https://github.com/fracassetti-stf/DSSSDTest/blob/main/PeakFitting/FitPeaksInteractively.C)).
 - The [Results](https://github.com/fracassetti-stf/DSSSDTest/tree/main/Results) of the analysis have been obtained by _Stefano Fracassetti_<sup>1</sup>, writing or using the different prgram present in this folder.  
 
-<sup>1</sup> Katholieke Universiteit Leuven, Belgium
+<sup>1</sup> KU Leuven, Instituut voor Kern en Stralingsfysica , Celestijnenlaan 200D, 3001 Leuven, Belgium
 
 ## License:
 Data relative to the DSSSD test should not be used in any way.  
