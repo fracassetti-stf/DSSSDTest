@@ -10,7 +10,7 @@ Characterization and performance of the DSSSD array ( 18 detectors) has been eva
 - The last 8 detectors (from number 11 to number 18) were (recently) bought in February 2021 (for this reason refereed as "new detectors"), they were never used before and not even tested.
 - All detectors are of the same model, and from the same company: "Micron Semiconductors LTD".
 - The detector configuarion was with floating front/back GR(Guard Ring), and floating front/back FP(Field Plate). Floating = Not Connected. 
-    - So far, the detectors have always been used in this configuration: The GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. 
+    - So far, the detectors have always been used in this configuration. Anyway, the GR can be biased - tipically done for detectors of thickness >1500um - to ensure that it is at the same potential of the active area, and to sweep out any charge collected by the GR itself. The FP can be biased - typically done on single-area single-sided devices - for cases were the device stability and breakdown voltage need to be extended. 
     - There is not a compelling need to make connections for these addition pins in our case, but the possiblily to actually use the addition pins could be further investigated. In particular, noise and lower-resolution in the first and last strips may be reduced in this way. On the other side, this new configuration would require different feedthrough PCB, so new feedthroughs must be produced.
 
  
