@@ -108,7 +108,7 @@ void ResolutionHistogram(TString PeakToFit, Double_t MaxRes)
 
 
   TCanvas* Canvas = new TCanvas("Canvas","241Am Peak Resolution",1920, 1080);
-  TH1F* ResHist = new TH1F("","", 100, 0, 5);
+  TH1F* ResHist = new TH1F("","", 200, 0, 5);
   ResHist->SetName("ResHist");
 
   Canvas->Range(-1,-1,1,1);
@@ -151,7 +151,7 @@ void ResolutionHistogram(TString PeakToFit, Double_t MaxRes)
   TString ResHist_Title = "Energy Resolution: All DSSSD   -   ^{241}Am #alpha-decay @5485.56 keV";
   //ResHist_Title.Append(Form("%d",det));
   //ResHist_Title.Append("241Am (@5485.56 keV)");
-  ResHist_Title.Append(";Strip Number;Detector Number;Resolution x1000 [%]");
+  ResHist_Title.Append(";Energy Resolution [%];Counts (Strips)");
   ResHist->SetTitle(ResHist_Title);
   ResHist->SetTitleOffset(1);
 
@@ -335,8 +335,9 @@ void ResolutionHistogram(TString PeakToFit, Double_t MaxRes)
 */
   Canvas->cd();
 //  gPad->SetLogz();
-//  ResHist->Draw("COLZL0");
-
+  ResHist->Draw("");
+  ResHist->SetLineColor(kBlack);
+  ResHist->SetFillColor(kBlue);
 
   //////////////////////////////////////////////////////////////////////////////
   ////////// Palette
@@ -387,5 +388,16 @@ void ResolutionHistogram(TString PeakToFit, Double_t MaxRes)
   Canvas_SaveNamePNG.Append(Form("%g",MaxRes));
   Canvas_SaveNamePNG.Append(".png");
   Canvas->SaveAs(Canvas_SaveNamePNG);
+  
+  // Save in root format
+  TString Canvas_SaveNameROOT = "ResolutionHistogram";
+  //Canvas_SaveNamePNG.Append(Form("%d",det));
+  if(PeakToFit=="Pulser") {
+    Canvas_SaveNameROOT.Append("_Pulser");
+  }
+  Canvas_SaveNameROOT.Append("_MaxRes");
+  Canvas_SaveNameROOT.Append(Form("%g",MaxRes));
+  Canvas_SaveNameROOT.Append(".root");
+  Canvas->SaveAs(Canvas_SaveNameROOT);
 
 } // end AllResolution()
