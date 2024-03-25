@@ -1,5 +1,5 @@
-## Note: Credits still in progress
-- Credits still need to be completed. Contacts: Stefano Fracassetti.  
+## Contacts
+Stefano Fracassetti (stefano.fracassetti@kuleuven.be)
 
  
 # DSSSD Test @KU Leuven
