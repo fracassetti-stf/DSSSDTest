@@ -41,7 +41,7 @@ Supervisor: _Riccardo Raabe_<sup>1</sup>
 <sup>1</sup> KU Leuven, Instituut voor Kern en Stralingsfysica , Celestijnenlaan 200D, 3001 Leuven, Belgium
 
 ## License:
-Data relative to the DSSSD test should not be used in any way.  
+Data relative to the DSSSD test should not be used unless permisison is given from the owners/authors.  
 
 I give permission to use/modify/improve the root macro I have written (_Stefano Fracassetti_) as you like and for your purpose, but always giving credits.  
 
